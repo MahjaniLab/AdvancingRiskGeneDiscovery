@@ -1,0 +1,30 @@
+
+# Advancing Risk Gene Discovery Across the Allele Frequency Spectrum
+# Author: Madison Caballero
+
+# Tandem repeat panel citation:
+Ziaei Jam H, Li Y, DeVito R, Mousavi N, Ma N, Lujumba I, Adam Y, Maksimov M, Huang B, Dolzhenko E, Qiu Y, Kakembo FE, Joseph H, Onyido B, Adeyemi J, Bakhtiari M, Park J, Javadzadeh S, Jjingo D, Adebiyi E, Bafna V, Gymrek M. A deep population reference panel of tandem repeat variation. Nat Commun. 2023 Oct 23;14(1):6711. doi: 10.1038/s41467-023-42278-3. PMID: 37872149; PMCID: PMC10593948.
+
+# Loci filtered to 2.5kb of a protein coding gene (MAINE transcripts):
+filtered_loci.bed
+
+# Steps:
+# Checks for N bases in flank (expansion hunter fails otherwise)
+perl 1_filter_sites.pl | sed -e 's/\:/\t/g' | sed -e  's/\-/\t/g' > loci_tested.bed
+perl 2_filter.pl | awk '{print $1 "\t" $2 "\t" $3 "\t" $4}' | bedtools sort > loci_tested_wmotif.bed
+
+# Formats the intervals into json files (splits in 4 runs for speed)
+perl 3_make_json.pl
+
+## Example Expansion Hunter command:
+module load expansionhunter/v5.0.0
+
+ExpansionHunter --reads 1kGP_crams/cram_passed/HG02257.final.cram \
+--reference Homo_sapiens_assembly38.fasta \
+--variant-catalog loci.1.json \
+--output-prefix results/HG02257/1.HG02257 \
+-n 8 --analysis-mode streaming --sex female
+
+# After individuals are run, the vcfs are merged (bcftools merge)
+
+# PCs for SNPs and tandem repeats are calculated with plink2 --vcf

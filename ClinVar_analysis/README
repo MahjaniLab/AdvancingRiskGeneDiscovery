@@ -1,0 +1,7 @@
+# Advancing Risk Gene Discovery Across the Allele Frequency Spectrum
+# Author: Madison Caballero
+
+Clinvar link: https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
+fileDate=2025-07-29
+
+individual_vcfs/ --> Isolation of functional variants in 1kGP
